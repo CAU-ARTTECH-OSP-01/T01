@@ -1,7 +1,7 @@
 using UnityEngine;
 
-[RequireComponent(tyreof(Ghost))]
-public class GhostBehavior : MonoBehaviour
+[RequireComponent(typeof(Ghost))]
+public abstract class GhostBehavior : MonoBehaviour
 {
     public Ghost ghost { get; private set; }
     public float duration;
@@ -17,7 +17,7 @@ public class GhostBehavior : MonoBehaviour
         Enable(this.duration);
     }
 
-        public void Enable(float duration)
+    public virtual void Enable(float duration)
     {
         this.enabled = true;
 
@@ -25,9 +25,9 @@ public class GhostBehavior : MonoBehaviour
         Invoke(nameof(Disable), duration);
     }
 
-    public void Disable()
+    public virtual void Disable()
     {
-        this.enabled = fals;
+        this.enabled = false;
 
         CancelInvoke();
     }
