@@ -1,6 +1,5 @@
 using UnityEngine;
 
-
 public class GhostFrightened : GhostBehavior
 {
     public SpriteRenderer body;
@@ -9,7 +8,6 @@ public class GhostFrightened : GhostBehavior
     public SpriteRenderer white;
 
     public bool eaten { get; private set; }
-
 
     public override void Enable(float duration)
     {
@@ -23,7 +21,6 @@ public class GhostFrightened : GhostBehavior
         Invoke(nameof(Flash), duration / 2.0f);
     }
 
-
     public override void Disable()
     {
         base.Disable();
@@ -34,7 +31,21 @@ public class GhostFrightened : GhostBehavior
         this.white.enabled = false;
     }
 
-    
+    private void Eaten()
+    {
+        this.eaten = true;
+
+        Vector3 position = this.ghost.home.inside.position;
+        position.z = this.ghost.transform.position.z;
+        this.ghost.transform.position = position;
+        this.ghost.home.Enable(this.duration);
+
+        this.body.enabled = false;
+        this.eyes.enabled = true;
+        this.blue.enabled = false;
+        this.white.enabled = false;
+    }
+
     private void Flash()
     {
         if (!this.eaten)
@@ -45,48 +56,17 @@ public class GhostFrightened : GhostBehavior
         }
     }
 
-
-    private void Eaten()
-    {
-        this.eaten = true;
-
-        Vector3 position = this.ghost.home.inside.position;
-        position.z = this.ghost.transform.position.z; 
-        this.ghost.transform.position = position;
-        this.ghost.home.Enable(this.duration);
-
-        this.body.enabled = false;
-        this.eyes.enabled = true;
-        this.blue.enabled = false;
-        this.white.enabled = false;
-
-    }
-
-
     private void OnEnable()
     {
         this.ghost.movement.speedMultiplier = 0.5f;
         this.eaten = false;
     }
 
-
     private void OnDisable()
     {
         this.ghost.movement.speedMultiplier = 1.0f;
         this.eaten = false;
     }
-
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if (collision.gameObject.layer == LayerMask.NameToLayer("Puang"))
-        {
-            if(this.enabled) {
-                Eaten();
-            } 
-        }
-    }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -99,7 +79,7 @@ public class GhostFrightened : GhostBehavior
 
             foreach (Vector2 availableDirection in node.availableDirections)
             {
-                Vector3 newPosition = this.transform.position + new Vector3(availableDirection.x, availableDirection);
+                Vector3 newPosition = this.transform.position + new Vector3(availableDirection.x, availableDirection.y);
                 float distance = (this.ghost.target.position - newPosition).sqrMagnitude;
 
                 if (distance > maxDistance)
@@ -110,6 +90,16 @@ public class GhostFrightened : GhostBehavior
             }
 
             this.ghost.movement.SetDirection(direction);
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.layer == LayerMask.NameToLayer("Puang"))
+        {
+            if(this.enabled) {
+                Eaten();
+            }
         }
     }
 
