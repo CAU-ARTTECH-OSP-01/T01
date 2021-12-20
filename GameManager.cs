@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -43,10 +44,10 @@ public class GameManager : MonoBehaviour
         ResetGhostMultiplier();
 
         for (int i = 0; i < this.ghosts.Length; i++) {
-            this.ghosts[i].gameObject.SetActive(true);
+            this.ghosts[i].ResetState();
         }
 
-        this.puang.gameObject.SetActive(true);
+        this.puang.ResetState();
     }
 
     private void GameOver()
@@ -103,7 +104,9 @@ public class GameManager : MonoBehaviour
 
     public void PowerPelletEaten(PowerPellet pellet)
     {
-        //TODO: changing ghost state
+        for (int i = 0; i < this.ghosts.Length; i++) {
+            this.ghosts[i].frightened.Enable(pellet.duration);
+        }
 
         PelletEaten(pellet);
         CancelInvoke();
@@ -125,5 +128,10 @@ public class GameManager : MonoBehaviour
     private void ResetGhostMultiplier()
     {
         this.ghostMultiplier = 1;
+    }
+
+    public void GoGameScene()
+    {
+        SceneManager.LoadScene(1);
     }
 }

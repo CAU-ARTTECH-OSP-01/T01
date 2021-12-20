@@ -50,7 +50,7 @@ public class GhostHome : GhostBehavior
 
         while (elapsed < duration)
         {
-            Vector3 newPosition = Vector3.Lerp(this.inside.position, this.outside.position, elapsed / duration)
+            Vector3 newPosition = Vector3.Lerp(this.inside.position, this.outside.position, elapsed / duration);
             newPosition.z = position.z;
             this.ghost.transform.position = newPosition;
             elapsed += Time.deltaTime;
@@ -61,5 +61,5 @@ public class GhostHome : GhostBehavior
         this.ghost.movement.rigidbody.isKinematic = false;
         this.ghost.movement.enabled = true;
     }
+
 }
-    
